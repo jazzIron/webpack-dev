@@ -8,11 +8,15 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   mode: "development",
   entry: {
-    main: "./app.js",
+    main: "./src/app.js",
   },
   output: {
     path: path.resolve("./dist"),
     filename: "[name].js",
+  },
+  devServer: {
+    overlay: true,
+    stats: "errors-only",
   },
   module: {
     rules: [
@@ -29,7 +33,7 @@ module.exports = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: "url-loader",
         options: {
-          publicPath: "./dist/", // live server 사용시 path를 못찾음 ./ => ../
+          //publicPath: "./dist/", // live server 사용시 path를 못찾음 ./ => ../
           name: "[name].[ext]?[hash]", // hash 처리(캐시)
           limit: 20000, // 2kb 최대
         },
