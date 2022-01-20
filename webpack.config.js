@@ -4,6 +4,7 @@ const childProcess = require("child_process"); // command 명령어 사용가능
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const apiMocker = require("connect-api-mocker");
 
 module.exports = {
   mode: "development",
@@ -17,6 +18,12 @@ module.exports = {
   devServer: {
     overlay: true,
     stats: "errors-only",
+    before: (app) => {
+      // 미들웨어 추가
+      app.use(apiMocker("/api", "mocks/api"));
+    },
+    // 핫 모듈 리플레이스먼트
+    hot: true,
   },
   module: {
     rules: [

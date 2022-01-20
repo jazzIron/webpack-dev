@@ -1,12 +1,30 @@
 import "./app.css";
-import nyancat from "./nyancat.jpg";
+import result from "./result";
+import form from "./form";
+//import nyancat from "./nyancat.jpg";
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.innerHTML = `<img src="${nyancat}" />`;
+let resultEl;
+let formEl;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  formEl = document.createElement("div");
+  formEl.innerHTML = form.render();
+  document.body.appendChild(formEl);
+
+  resultEl = document.createElement("div");
+  resultEl.innerHTML = await result.render();
+  document.body.appendChild(resultEl);
 });
 
-// console.log(process.env.NODE_ENV);
-// console.log(TWO);
-// console.log(api.domain);
+if (module.hot) {
+  // 변경된 모듈만 변경할 수 있음
+  console.log("핫 모듈 켜짐 ");
+  module.hot.accept("./result", async () => {
+    console.log("result module 변경됨");
+    resultEl.innerHTML = await result.render();
+  });
 
-console.log("hello world");
+  module.hot.accept("./form", () => {
+    formEl.render();
+  });
+}

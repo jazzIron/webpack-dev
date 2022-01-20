@@ -11,7 +11,10 @@
   },
   "author": "jazz.Iron <57489807+LeeJaeChul@users.noreply.github.com>",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.25.0",
+    "connect-api-mocker": "^1.10.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.16.8",
     "@babel/core": "7.7.7",
