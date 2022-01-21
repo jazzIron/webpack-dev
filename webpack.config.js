@@ -5,11 +5,17 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const apiMocker = require("connect-api-mocker");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin"); // css 파일도 빈칸을 없애는 압축
+const TerserPlugin = require("terser-webpack-plugin"); // console.log 제거 옵션
+const CopyPlugin = require("copy-webpack-plugin");
+
+const mode = process.env.NODE_ENV || "development";
 
 module.exports = {
-  mode: "development",
+  mode,
   entry: {
     main: "./src/app.js",
+    // result: "./src/result.js",
   },
   output: {
     path: path.resolve("./dist"),
@@ -24,6 +30,27 @@ module.exports = {
     },
     // 핫 모듈 리플레이스먼트
     hot: true,
+  },
+  optimization: {
+    minimizer:
+      mode === "production"
+        ? [
+            new OptimizeCSSAssetsPlugin(),
+            new TerserPlugin({
+              terserOptions: {
+                compress: {
+                  drop_console: true, // 콘솔 로그를 제거한다
+                },
+              },
+            }),
+          ]
+        : [],
+    // splitChunks: {
+    //   chunks: "all",
+    // },
+  },
+  externals: {
+    axios: "axios",
   },
   module: {
     rules: [
@@ -40,7 +67,6 @@ module.exports = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: "url-loader",
         options: {
-          //publicPath: "./dist/", // live server 사용시 path를 못찾음 ./ => ../
           name: "[name].[ext]?[hash]", // hash 처리(캐시)
           limit: 20000, // 2kb 최대
         },
@@ -90,5 +116,12 @@ module.exports = {
           }),
         ]
       : []),
+    // 설정 초반에는 사용하지않고 볼륨이 커지면 사용함
+    new CopyPlugin([
+      {
+        from: "./node_modules/axios/dist/axios.min.js",
+        to: "./axios.min.js",
+      },
+    ]),
   ],
 };

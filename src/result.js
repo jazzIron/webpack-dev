@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const result = {
   async render() {
     const res = await axios.get("/api/users");
